@@ -33,7 +33,7 @@ English / [简体中文](./README_CN.md)
 - 获取OpenAI API，需要注册OpenAI的API服务，点击右边的View API keys. 然后点击Create new secret key 即可生成新的API Key.
 - 获取Dify Api，包括以下两种办法：①使用Dify官方提供的云服务创建Dify API，访问 [Dify.ai](https://cloud.dify.ai) ②自己Docker部署后端服务
 ### 最简易的食用指南
-- 
+- Vercel部署，记得添加环境变量哦
 
 
 ## 开发计划
