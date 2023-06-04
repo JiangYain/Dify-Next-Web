@@ -119,6 +119,19 @@ const en: RequiredLocaleType = {
       Title: "Mask Splash Screen",
       SubTitle: "Show a mask splash screen before starting new chat",
     },
+    DifyKeyList: {
+      List: "Dify Key List",
+      ListCount: (count: number) => `${count} keys in total`,
+      Edit: "Edit",
+      Modal: {
+        Title: "Dify Key List",
+        Add: "Add One",
+        Search: "Search Dify Key",
+      },
+      EditModal: {
+        Title: "Edit Dify Key",
+      },
+    },
     Prompt: {
       Disable: {
         Title: "Disable auto-completion",
