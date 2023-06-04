@@ -49,7 +49,7 @@ export function MaskConfig(props: {
     if (props.readonly) return;
 
     const config = { ...props.mask.modelConfig };
-    updater(config);
+    updater(config as ModelConfig);
     props.updateMask((mask) => {
       mask.modelConfig = config;
       // if user changed current session mask, it will disable auto sync
@@ -143,7 +143,7 @@ export function MaskConfig(props: {
 
       <List>
         <ModelConfigList
-          modelConfig={{ ...props.mask.modelConfig }}
+          modelConfig={{ ...props.mask.modelConfig } as ModelConfig}
           updateConfig={updateConfig}
         />
         {props.extraListItems}

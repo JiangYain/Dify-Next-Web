@@ -13,7 +13,7 @@ export type Mask = {
   hideContext?: boolean;
   context: ChatMessage[];
   syncGlobalConfig?: boolean;
-  modelConfig: ModelConfig;
+  modelConfig: Omit<ModelConfig, "IsDifyEnabled">;
   lang: Lang;
   builtin: boolean;
 };
