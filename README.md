@@ -25,12 +25,12 @@ English / [简体中文](./README_CN.md)
 
 - Dify Next Web提供链接Dify的服务，且设置了Dify Key的列表以存储多个API KEY以方便切换，构建在垂直细分领域的应用
 - 本项目提供一个基于Llamaindex的chrome插件，用于链接本地数据，奈何Llamaindex的release频率太高，且有一点点技术要求，暂不开放
-<br>
+  <br>
 - ChatGPT-Next-Web 是一个用于部署ChatGPT web UI的项目，它的主要功能包括完整的Markdown支持、流式响应、Mask和Prompt支持和上下文摘要等
 - 关于部署教程参阅[简体中文](./README_CN.md)
 - Dify 是一个LLMOps平台，旨在使更多的人能够创建可持续的、AI原生的应用程序。它提供了数据集的集成，以及用于提示工程、可视化分析和持续改进的单一接口
 - 关于部署教程参阅[Dify文档](https://docs.dify.ai/v/zh-hans/getting-started/intro-to-dify)
-<br>
+  <br>
 - 想要使用Dify Next Web服务，需要获取两个API
 - 获取OpenAI API，需要注册OpenAI的API服务，点击右边的View API keys. 然后点击Create new secret key 即可生成新的API Key.
 - 获取Dify Api，包括以下两种办法：①使用Dify官方提供的云服务创建Dify API，访问 [Dify.ai](https://cloud.dify.ai) ②自己Docker部署后端服务
