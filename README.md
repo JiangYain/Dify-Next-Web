@@ -7,7 +7,9 @@ English / [简体中文](./README_CN.md)
 
 本项目基于Dify和ChatGPT-Next-Web两个项目创建，用于构建大语言模型在垂直细分领域的应用
 
-您可以点击下方“Buy Me a Coffee”为ChatGPT-Next-Web的开发者Yidadaa提供支持，很可惜没有找到Dify开发者的支持方式，各位可以多多关注Dify项目
+您可以点击下方“Buy Me a Coffee”为ChatGPT-Next-Web的开发者Yidadaa提供支持
+   
+很可惜没有找到Dify开发者的支持方式，各位可以多多关注Dify项目
 
 [Demo](https://chatgpt.nextweb.fun/) / [Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
