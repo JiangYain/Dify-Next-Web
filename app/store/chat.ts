@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { trimTopic } from "../utils";
+import { nanoid } from "nanoid";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
@@ -46,9 +47,25 @@ export interface ChatSession {
   lastUpdate: number;
   lastSummarizeIndex: number;
   clearContextIndex?: number;
-
+  isDifySession?: boolean;
+  difyConversationId?: string;
+  difyUserId?: string;
   mask: Mask;
 }
+
+// export interface DifyChatSession {
+//   id: number;
+//   topic: string;
+
+//   memoryPrompt: string;
+//   messages: ChatMessage[];
+//   stat: ChatStat;
+//   lastUpdate: number;
+//   lastSummarizeIndex: number;
+//   clearContextIndex?: number;
+
+//   conversationId?:string;
+// }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
 export const BOT_HELLO: ChatMessage = createMessage({
@@ -69,10 +86,27 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
+    isDifySession: false,
 
     mask: createEmptyMask(),
   };
 }
+
+// function createDifySession(): DifyChatSession {
+//   return {
+//     id: Date.now() + Math.random(),
+//     topic: DEFAULT_TOPIC,
+//     memoryPrompt: "",
+//     messages: [],
+//     stat: {
+//       tokenCount: 0,
+//       wordCount: 0,
+//       charCount: 0,
+//     },
+//     lastUpdate: Date.now(),
+//     lastSummarizeIndex: 0,
+//   };
+// }
 
 interface ChatStore {
   sessions: ChatSession[];
@@ -81,7 +115,7 @@ interface ChatStore {
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
-  newSession: (mask?: Mask) => void;
+  newSession: (mask?: Mask, isDifySession?: boolean) => void;
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: ChatMessage) => void;
@@ -150,7 +184,7 @@ export const useChatStore = create<ChatStore>()(
         });
       },
 
-      newSession(mask) {
+      newSession(mask, isDifySession) {
         const session = createEmptySession();
 
         set(() => ({ globalId: get().globalId + 1 }));
@@ -159,6 +193,17 @@ export const useChatStore = create<ChatStore>()(
         if (mask) {
           session.mask = { ...mask };
           session.topic = mask.name;
+        }
+        if (isDifySession) {
+          session.isDifySession = true;
+          const id = localStorage.getItem("difyUserId");
+          if (id) session.difyUserId = id;
+          else {
+            const newId = nanoid(32);
+            localStorage.setItem("difyUserId", newId);
+            session.difyUserId = newId;
+          }
+          console.log("[Dify Session]", session);
         }
 
         set((state) => ({
@@ -231,10 +276,10 @@ export const useChatStore = create<ChatStore>()(
         get().updateStat(message);
         get().summarizeSession();
       },
-
       async onUserInput(content) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
+        console.log("[model config]", modelConfig);
 
         const userMessage: ChatMessage = createMessage({
           role: "user",
@@ -247,7 +292,6 @@ export const useChatStore = create<ChatStore>()(
           id: userMessage.id! + 1,
           model: modelConfig.model,
         });
-
         const systemInfo = createMessage({
           role: "system",
           content: `IMPORTANT: You are a virtual assistant powered by the ${
@@ -259,11 +303,11 @@ export const useChatStore = create<ChatStore>()(
         // get recent messages
         const systemMessages = [];
         // if user define a mask with context prompts, wont send system info
-        if (session.mask.context.length === 0) {
+        if (session.mask.context.length === 0 && !session.isDifySession) {
           systemMessages.push(systemInfo);
         }
-
         const recentMessages = get().getMessagesWithMemory();
+        console.log("[Recent Messages]", recentMessages);
         const sendMessages = systemMessages.concat(
           recentMessages.concat(userMessage),
         );
@@ -278,57 +322,123 @@ export const useChatStore = create<ChatStore>()(
 
         // make request
         console.log("[User Input] ", sendMessages);
-        api.llm.chat({
-          messages: sendMessages,
-          config: { ...modelConfig, stream: true },
-          onUpdate(message) {
-            botMessage.streaming = true;
-            if (message) {
-              botMessage.content = message;
-            }
-            set(() => ({}));
-          },
-          onFinish(message) {
-            botMessage.streaming = false;
-            if (message) {
-              botMessage.content = message;
-              get().onNewMessage(botMessage);
-            }
-            ChatControllerPool.remove(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-            );
-            set(() => ({}));
-          },
-          onError(error) {
-            const isAborted = error.message.includes("aborted");
-            botMessage.content =
-              "\n\n" +
-              prettyObject({
-                error: true,
-                message: error.message,
+        if (!session.isDifySession) {
+          api.llm.chat({
+            messages: sendMessages,
+            config: { ...modelConfig, stream: true },
+            onUpdate(message) {
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              set(() => ({}));
+            },
+            onFinish(message) {
+              botMessage.streaming = false;
+              if (message) {
+                botMessage.content = message;
+                get().onNewMessage(botMessage);
+              }
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+              set(() => ({}));
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content =
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
+                });
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
+
+              set(() => ({}));
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
+        } else if (session.isDifySession && session.difyUserId) {
+          api.dify.chat({
+            // messages: sendMessages,
+            config: {
+              conversationId: session.difyConversationId
+                ? session.difyConversationId
+                : "",
+              stream: true,
+            },
+            query: userMessage.content,
+            user: session.difyUserId,
+            onUpdate(message, newConversationId) {
+              console.log("[Conversation Id]", newConversationId);
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              // if (conversationId) session.difyConversationId = conversationId
+              set(() => ({}));
+              get().updateCurrentSession((session) => {
+                session.difyConversationId = newConversationId;
               });
-            botMessage.streaming = false;
-            userMessage.isError = !isAborted;
-            botMessage.isError = !isAborted;
+            },
+            onFinish(message) {
+              botMessage.streaming = false;
+              if (message) {
+                botMessage.content = message;
+                get().onNewMessage(botMessage);
+              }
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+              set(() => ({}));
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content =
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
+                });
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
 
-            set(() => ({}));
-            ChatControllerPool.remove(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-            );
+              set(() => ({}));
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
 
-            console.error("[Chat] failed ", error);
-          },
-          onController(controller) {
-            // collect controller for stop/retry
-            ChatControllerPool.addController(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-              controller,
-            );
-          },
-        });
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
+        }
       },
 
       getMemoryPrompt() {

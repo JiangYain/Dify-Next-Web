@@ -539,7 +539,18 @@
 .chat-input:focus {
   border: 1px solid var(--primary);
 }
+.chat-input[disabled]{
+  background-color: #ddd;
+  color: #888;
+}
+.chat-input-send[disabled] {
+  background-color: #888;
+  // color: white;
 
+  position: absolute;
+  right: 30px;
+  bottom: 32px;
+}
 .chat-input-send {
   background-color: var(--primary);
   color: white;

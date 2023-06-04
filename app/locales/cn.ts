@@ -5,12 +5,15 @@ const cn = {
   Error: {
     Unauthorized:
       "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",
+    DifyUnauthorized:
+      "请前往[设置](/#/settings)页检查 Dify 访问密钥是否填入，以及是否填入正确。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
     SubTitle: (count: number) => `与 ChatGPT 的 ${count} 条对话`,
+    DifySubTitle: (count: number) => `与 Dify.ai 的 ${count} 条对话`,
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
@@ -34,6 +37,7 @@ const cn = {
       Reset: "清除记忆",
       SaveAs: "存为面具",
     },
+    PleaseEnableDify: "请先启用 Dify 以继续此对话",
   },
   Export: {
     Title: "分享聊天记录",
@@ -114,6 +118,19 @@ const cn = {
       Title: "面具启动页",
       SubTitle: "新建聊天时，展示面具启动页",
     },
+    DifyKeyList: {
+      List: "Dify Key 列表",
+      ListCount: (count: number) => `共有 ${count} 个`,
+      Edit: "编辑",
+      Modal: {
+        Title: "Dify Key 列表",
+        Add: "新建",
+        Search: "搜索 Dify Key",
+      },
+      EditModal: {
+        Title: "编辑 Dify Key",
+      },
+    },
     Prompt: {
       Disable: {
         Title: "禁用提示词自动补全",
@@ -145,7 +162,11 @@ const cn = {
       SubTitle: "使用自己的 Key 可绕过密码访问限制",
       Placeholder: "OpenAI API Key",
     },
-
+    DifyToken: {
+      Title: "Dify API Key",
+      SubTitle: "使用KEY可绕过密码访问限制",
+      Placeholder: "Dify API Key",
+    },
     Usage: {
       Title: "余额查询",
       SubTitle(used: any, total: any) {
@@ -161,6 +182,7 @@ const cn = {
       Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
+    IsDifyEnabled: "是否启用Dify",
     Temperature: {
       Title: "随机性 (temperature)",
       SubTitle: "值越大，回复越随机",

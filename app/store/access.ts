@@ -8,15 +8,20 @@ import { ALL_MODELS } from "./config";
 export interface AccessControlStore {
   accessCode: string;
   token: string;
+  difyToken: string;
 
   needCode: boolean;
   hideUserApiKey: boolean;
   openaiUrl: string;
+  difyUrl: string;
 
   updateToken: (_: string) => void;
+  updateDifyToken: (_: string) => void;
   updateCode: (_: string) => void;
   enabledAccessControl: () => boolean;
   isAuthorized: () => boolean;
+  isDifyAuthorized: () => boolean;
+  isAuthorizedWithoutDify: () => boolean;
   fetch: () => void;
 }
 
@@ -26,10 +31,12 @@ export const useAccessStore = create<AccessControlStore>()(
   persist(
     (set, get) => ({
       token: "",
+      difyToken: "",
       accessCode: "",
       needCode: true,
       hideUserApiKey: false,
       openaiUrl: "/api/openai/",
+      difyUrl: "/api/dify",
 
       enabledAccessControl() {
         get().fetch();
@@ -42,10 +49,26 @@ export const useAccessStore = create<AccessControlStore>()(
       updateToken(token: string) {
         set(() => ({ token }));
       },
+      updateDifyToken(difyToken: string) {
+        set(() => ({ difyToken }));
+      },
       isAuthorized() {
         get().fetch();
 
         // has token or has code or disabled access control
+        return (
+          !!get().difyToken ||
+          !!get().token ||
+          !!get().accessCode ||
+          !get().enabledAccessControl()
+        );
+      },
+      isDifyAuthorized() {
+        get().fetch();
+        return !!get().difyToken || !get().enabledAccessControl();
+      },
+      isAuthorizedWithoutDify() {
+        get().fetch();
         return (
           !!get().token || !!get().accessCode || !get().enabledAccessControl()
         );

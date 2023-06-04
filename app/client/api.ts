@@ -1,6 +1,7 @@
-import { ACCESS_CODE_PREFIX } from "../constant";
+import { ACCESS_CODE_PREFIX, DIFY_KEY_PREFIX } from "../constant";
 import { ChatMessage, ModelConfig, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
+import { DifyAPI } from "./platforms/dify";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -44,9 +45,11 @@ export abstract class LLMApi {
 
 export class ClientApi {
   public llm: LLMApi;
+  public dify: DifyAPI;
 
   constructor() {
     this.llm = new ChatGPTApi();
+    this.dify = new DifyAPI();
   }
 
   config() {}
@@ -113,6 +116,24 @@ export function getHeaders() {
     headers.Authorization = makeBearer(
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
+  }
+
+  return headers;
+}
+
+export function getDifyHeaders() {
+  const accessStore = useAccessStore.getState();
+  let headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "x-requested-with": "XMLHttpRequest",
+  };
+
+  const makeBearer = (token: string) => `Bearer ${token.trim()}`;
+  const validString = (x: string) => x && x.length > 0;
+
+  // use user's api key first
+  if (validString(accessStore.difyToken)) {
+    headers.Authorization = makeBearer(accessStore.difyToken);
   }
 
   return headers;

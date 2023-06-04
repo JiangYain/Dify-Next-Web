@@ -37,6 +37,7 @@ export const DEFAULT_CONFIG = {
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
+    IsDifyEnabled: true,
   },
 };
 

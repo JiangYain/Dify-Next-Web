@@ -605,7 +605,9 @@ export function Chat() {
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
-    if (!accessStore.isAuthorized()) {
+    if (!accessStore.isDifyAuthorized() && session.isDifySession) {
+      copiedHello.content = Locale.Error.DifyUnauthorized;
+    } else if (!accessStore.isAuthorized()) {
       copiedHello.content = Locale.Error.Unauthorized;
     }
     context.push(copiedHello);
@@ -678,7 +680,9 @@ export function Chat() {
             {!session.topic ? DEFAULT_TOPIC : session.topic}
           </div>
           <div className="window-header-sub-title">
-            {Locale.Chat.SubTitle(session.messages.length)}
+            {session.isDifySession
+              ? Locale.Chat.DifySubTitle(session.messages.length)
+              : Locale.Chat.SubTitle(session.messages.length)}
           </div>
         </div>
         <div className="window-actions">
@@ -860,7 +864,11 @@ export function Chat() {
           <textarea
             ref={inputRef}
             className={styles["chat-input"]}
-            placeholder={Locale.Chat.Input(submitKey)}
+            placeholder={
+              session.isDifySession && !config.modelConfig.IsDifyEnabled
+                ? Locale.Chat.PleaseEnableDify
+                : Locale.Chat.Input(submitKey)
+            }
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}
@@ -868,6 +876,11 @@ export function Chat() {
             onBlur={() => setAutoScroll(false)}
             rows={inputRows}
             autoFocus={autoFocus}
+            disabled={
+              session.isDifySession && !config.modelConfig.IsDifyEnabled
+                ? true
+                : false
+            }
           />
           <IconButton
             icon={<SendWhiteIcon />}
@@ -875,6 +888,11 @@ export function Chat() {
             className={styles["chat-input-send"]}
             type="primary"
             onClick={() => doSubmit(userInput)}
+            disabled={
+              session.isDifySession && !config.modelConfig.IsDifyEnabled
+                ? true
+                : false
+            }
           />
         </div>
       </div>

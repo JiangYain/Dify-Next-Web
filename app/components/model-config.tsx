@@ -29,6 +29,17 @@ export function ModelConfigList(props: {
           ))}
         </Select>
       </ListItem>
+      <ListItem title={Locale.Settings.IsDifyEnabled}>
+        <input
+          type="checkbox"
+          checked={props.modelConfig.IsDifyEnabled}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) => (config.IsDifyEnabled = e.currentTarget.checked),
+            )
+          }
+        ></input>
+      </ListItem>
       <ListItem
         title={Locale.Settings.Temperature.Title}
         subTitle={Locale.Settings.Temperature.SubTitle}

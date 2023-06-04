@@ -187,6 +187,9 @@ export function SideBar(props: { className?: string }) {
               if (config.dontShowMaskSplashScreen) {
                 chatStore.newSession();
                 navigate(Path.Chat);
+              } else if (config.modelConfig.IsDifyEnabled) {
+                chatStore.newSession(undefined, true);
+                navigate(Path.Chat);
               } else {
                 navigate(Path.NewChat);
               }

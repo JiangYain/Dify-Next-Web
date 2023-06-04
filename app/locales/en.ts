@@ -6,12 +6,15 @@ const en: RequiredLocaleType = {
   Error: {
     Unauthorized:
       "Unauthorized access, please enter access code in settings page.",
+    DifyUnauthorized:
+      "Please go to the [Settings](/#/settings) page to check if the Dify access key has been filled in and is correctly filled in.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
   },
   Chat: {
     SubTitle: (count: number) => `${count} messages with ChatGPT`,
+    DifySubTitle: (count: number) => `${count} messages with Dify.ai`,
     Actions: {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
@@ -35,6 +38,7 @@ const en: RequiredLocaleType = {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
     },
+    PleaseEnableDify: "Please enable Dify.ai to continue this conversation",
   },
   Export: {
     Title: "Export Messages",
@@ -147,6 +151,11 @@ const en: RequiredLocaleType = {
       SubTitle: "Use your key to ignore access code limit",
       Placeholder: "OpenAI API Key",
     },
+    DifyToken: {
+      Title: "Dify API Key",
+      SubTitle: "Use your Dify key to ignore access code limit",
+      Placeholder: "Dify API Key",
+    },
     Usage: {
       Title: "Account Balance",
       SubTitle(used: any, total: any) {
@@ -162,6 +171,7 @@ const en: RequiredLocaleType = {
       Placeholder: "Need Access Code",
     },
     Model: "Model",
+    IsDifyEnabled: "Is Dify.ai enabled",
     Temperature: {
       Title: "Temperature",
       SubTitle: "A larger value makes the more random output",
