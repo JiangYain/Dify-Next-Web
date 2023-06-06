@@ -42,6 +42,7 @@ export function MaskConfig(props: {
   extraListItems?: JSX.Element;
   readonly?: boolean;
   shouldSyncFromGlobal?: boolean;
+  isNotDifySession?: boolean;
 }) {
   const [showPicker, setShowPicker] = useState(false);
 
@@ -61,14 +62,16 @@ export function MaskConfig(props: {
 
   return (
     <>
-      <ContextPrompts
-        context={props.mask.context}
-        updateContext={(updater) => {
-          const context = props.mask.context.slice();
-          updater(context);
-          props.updateMask((mask) => (mask.context = context));
-        }}
-      />
+      {props.isNotDifySession ? (
+        <ContextPrompts
+          context={props.mask.context}
+          updateContext={(updater) => {
+            const context = props.mask.context.slice();
+            updater(context);
+            props.updateMask((mask) => (mask.context = context));
+          }}
+        />
+      ) : null}
 
       <List>
         <ListItem title={Locale.Mask.Config.Avatar}>
@@ -103,20 +106,22 @@ export function MaskConfig(props: {
             }
           ></input>
         </ListItem>
-        <ListItem
-          title={Locale.Mask.Config.HideContext.Title}
-          subTitle={Locale.Mask.Config.HideContext.SubTitle}
-        >
-          <input
-            type="checkbox"
-            checked={props.mask.hideContext}
-            onChange={(e) => {
-              props.updateMask((mask) => {
-                mask.hideContext = e.currentTarget.checked;
-              });
-            }}
-          ></input>
-        </ListItem>
+        {props.isNotDifySession ? (
+          <ListItem
+            title={Locale.Mask.Config.HideContext.Title}
+            subTitle={Locale.Mask.Config.HideContext.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={props.mask.hideContext}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.hideContext = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+        ) : null}
         {props.shouldSyncFromGlobal ? (
           <ListItem
             title={Locale.Mask.Config.Sync.Title}
@@ -140,14 +145,15 @@ export function MaskConfig(props: {
           </ListItem>
         ) : null}
       </List>
-
-      <List>
-        <ModelConfigList
-          modelConfig={{ ...props.mask.modelConfig } as ModelConfig}
-          updateConfig={updateConfig}
-        />
-        {props.extraListItems}
-      </List>
+      {props.isNotDifySession && (
+        <List>
+          <ModelConfigList
+            modelConfig={{ ...props.mask.modelConfig } as ModelConfig}
+            updateConfig={updateConfig}
+          />
+          {props.extraListItems}
+        </List>
+      )}
     </>
   );
 }

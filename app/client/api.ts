@@ -121,8 +121,8 @@ export function getHeaders() {
   return headers;
 }
 
-export function getDifyHeaders() {
-  const accessStore = useAccessStore.getState();
+export function getDifyHeaders(difyKey: string) {
+  // const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {
     "Content-Type": "application/json",
     "x-requested-with": "XMLHttpRequest",
@@ -132,8 +132,8 @@ export function getDifyHeaders() {
   const validString = (x: string) => x && x.length > 0;
 
   // use user's api key first
-  if (validString(accessStore.difyToken)) {
-    headers.Authorization = makeBearer(accessStore.difyToken);
+  if (validString(difyKey)) {
+    headers.Authorization = makeBearer(difyKey);
   }
 
   return headers;

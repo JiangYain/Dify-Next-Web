@@ -19,7 +19,7 @@ interface DifyChatOptions {
   config: DifyLLMConfig;
   query: string;
   user: string;
-
+  difyKey: string;
   onUpdate?: (message: string, conversationId?: string) => void;
   onFinish: (message: string) => void;
   onError?: (err: Error) => void;
@@ -60,7 +60,7 @@ export class DifyAPI {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getDifyHeaders(),
+        headers: getDifyHeaders(options.difyKey),
       };
       console.log("[Dify Chat Headers]", chatPayload.headers);
       console.log("[Dify Chat Path]", chatPath);

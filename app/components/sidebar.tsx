@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -27,6 +27,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showToast } from "./ui-lib";
+import { DifyNewChat } from "./dify-new-chat";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -110,6 +111,8 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
 
+  const [showDifyNewChat, setShowDifyNewChat] = useState(false);
+
   useHotKey();
 
   return (
@@ -188,8 +191,7 @@ export function SideBar(props: { className?: string }) {
                 chatStore.newSession();
                 navigate(Path.Chat);
               } else if (config.modelConfig.IsDifyEnabled) {
-                chatStore.newSession(undefined, true);
-                navigate(Path.Chat);
+                setShowDifyNewChat(true);
               } else {
                 navigate(Path.NewChat);
               }
@@ -203,6 +205,9 @@ export function SideBar(props: { className?: string }) {
         className={styles["sidebar-drag"]}
         onMouseDown={(e) => onDragMouseDown(e as any)}
       ></div>
+      {showDifyNewChat && (
+        <DifyNewChat onClose={() => setShowDifyNewChat(false)}></DifyNewChat>
+      )}
     </div>
   );
 }

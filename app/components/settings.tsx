@@ -671,7 +671,7 @@ export function Settings() {
               />
             </ListItem>
           ) : null}
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.DifyToken.Title}
             subTitle={Locale.Settings.DifyToken.SubTitle}
           >
@@ -683,7 +683,7 @@ export function Settings() {
                 accessStore.updateDifyToken(e.currentTarget.value);
               }}
             />
-          </ListItem>
+          </ListItem> */}
           <ListItem
             title={Locale.Settings.DifyKeyList.List}
             subTitle={Locale.Settings.DifyKeyList.ListCount(DifyKeyCount)}

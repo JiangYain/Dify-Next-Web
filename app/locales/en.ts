@@ -15,6 +15,8 @@ const en: RequiredLocaleType = {
   Chat: {
     SubTitle: (count: number) => `${count} messages with ChatGPT`,
     DifySubTitle: (count: number) => `${count} messages with Dify.ai`,
+    SelectDifyKey: "Use this key",
+    SelectDifyKeyTitle: "Select a Dify.ai key to begin conversation",
     Actions: {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",

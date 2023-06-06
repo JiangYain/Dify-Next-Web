@@ -50,6 +50,7 @@ export interface ChatSession {
   isDifySession?: boolean;
   difyConversationId?: string;
   difyUserId?: string;
+  difyKey?: string;
   mask: Mask;
 }
 
@@ -115,7 +116,7 @@ interface ChatStore {
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
-  newSession: (mask?: Mask, isDifySession?: boolean) => void;
+  newSession: (mask?: Mask, isDifySession?: boolean, difyKey?: string) => void;
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: ChatMessage) => void;
@@ -184,7 +185,7 @@ export const useChatStore = create<ChatStore>()(
         });
       },
 
-      newSession(mask, isDifySession) {
+      newSession(mask, isDifySession, difyKey) {
         const session = createEmptySession();
 
         set(() => ({ globalId: get().globalId + 1 }));
@@ -196,6 +197,7 @@ export const useChatStore = create<ChatStore>()(
         }
         if (isDifySession) {
           session.isDifySession = true;
+          session.difyKey = difyKey;
           const id = localStorage.getItem("difyUserId");
           if (id) session.difyUserId = id;
           else {
@@ -374,7 +376,11 @@ export const useChatStore = create<ChatStore>()(
               );
             },
           });
-        } else if (session.isDifySession && session.difyUserId) {
+        } else if (
+          session.isDifySession &&
+          session.difyUserId &&
+          session.difyKey
+        ) {
           api.dify.chat({
             // messages: sendMessages,
             config: {
@@ -385,6 +391,7 @@ export const useChatStore = create<ChatStore>()(
             },
             query: userMessage.content,
             user: session.difyUserId,
+            difyKey: session.difyKey,
             onUpdate(message, newConversationId) {
               console.log("[Conversation Id]", newConversationId);
               botMessage.streaming = true;
