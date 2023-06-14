@@ -5,9 +5,16 @@ const en: RequiredLocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
-      "Unauthorized access, please enter access code in settings page.",
+      "Unauthorized access, please enter access code in [auth](/#/auth) page.",
     DifyUnauthorized:
       "Please go to the [Settings](/#/settings) page to check if the Dify access key has been filled in and is correctly filled in.",
+  },
+  Auth: {
+    Title: "Need Access Code",
+    Tips: "Please enter access code below",
+    Input: "access code",
+    Confirm: "Confirm",
+    Later: "Later",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -25,6 +32,19 @@ const en: RequiredLocaleType = {
       Stop: "Stop",
       Retry: "Retry",
       Delete: "Delete",
+    },
+    InputActions: {
+      Stop: "Stop",
+      ToBottom: "To Latest",
+      Theme: {
+        auto: "Auto",
+        light: "Light Theme",
+        dark: "Dark Theme",
+      },
+      Prompt: "Prompts",
+      Masks: "Masks",
+      Clear: "Clear Context",
+      Settings: "Settings",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -184,6 +204,10 @@ const en: RequiredLocaleType = {
       Title: "Access Code",
       SubTitle: "Access control enabled",
       Placeholder: "Need Access Code",
+    },
+    Endpoint: {
+      Title: "Endpoint",
+      SubTitle: "Custom endpoint must start with http(s)://",
     },
     Model: "Model",
     IsDifyEnabled: "Is Dify.ai enabled",

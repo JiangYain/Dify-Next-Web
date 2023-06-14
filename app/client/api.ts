@@ -1,5 +1,5 @@
 import { ACCESS_CODE_PREFIX, DIFY_KEY_PREFIX } from "../constant";
-import { ChatMessage, ModelConfig, ModelType, useAccessStore } from "../store";
+import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 import { DifyAPI } from "./platforms/dify";
 
@@ -41,6 +41,27 @@ export interface LLMUsage {
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
+}
+
+type ProviderName = "openai" | "azure" | "claude" | "palm";
+
+interface Model {
+  name: string;
+  provider: ProviderName;
+  ctxlen: number;
+}
+
+interface ChatProvider {
+  name: ProviderName;
+  apiConfig: {
+    baseUrl: string;
+    apiKey: string;
+    summaryModel: Model;
+  };
+  models: Model[];
+
+  chat: () => void;
+  usage: () => void;
 }
 
 export class ClientApi {
