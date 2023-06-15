@@ -22,7 +22,7 @@ export interface AccessControlStore {
   updateOpenAiUrl: (_: string) => void;
   enabledAccessControl: () => boolean;
   isAuthorized: () => boolean;
-  isDifyAuthorized: () => boolean;
+  // isDifyAuthorized: () => boolean;
   isAuthorizedWithoutDify: () => boolean;
   fetch: () => void;
 }
@@ -72,10 +72,10 @@ export const useAccessStore = create<AccessControlStore>()(
           !get().enabledAccessControl()
         );
       },
-      isDifyAuthorized() {
-        get().fetch();
-        return !!get().difyToken || !get().enabledAccessControl();
-      },
+      // isDifyAuthorized() {
+      //   get().fetch();
+      //   return !!get().difyToken || !get().enabledAccessControl();
+      // },
       isAuthorizedWithoutDify() {
         get().fetch();
         return (

@@ -44,7 +44,7 @@ export class DifyAPI {
       response_mode: options.config.stream ? "streaming" : "blocking",
       query: options.query,
       user: options.user,
-      conversationId: options.config.conversationId,
+      conversation_id: options.config.conversationId,
       inputs: {},
     };
 
@@ -132,7 +132,7 @@ export class DifyAPI {
             try {
               const json = JSON.parse(text);
               const delta = json.answer;
-              console.log("[Dify json]", json);
+              // console.log("[Dify json]", json);
               if (delta) {
                 responseText += delta;
                 options.onUpdate?.(responseText, json.conversation_id);

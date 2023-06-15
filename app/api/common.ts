@@ -104,9 +104,12 @@ export async function requestDify(req: NextRequest) {
   if (!baseUrl.startsWith("http")) {
     baseUrl = `${PROTOCOL}://${baseUrl}`;
   }
-
   console.log("[Proxy] ", difyPath);
   console.log("[Base Url]", baseUrl);
+  // try {
+  //   const json = await req.json();
+  //   console.log("[Dify Body]",{ json });
+  // } catch{}
 
   // if (process.env.OPENAI_ORG_ID) {
   //   console.log("[Org ID]", process.env.OPENAI_ORG_ID);

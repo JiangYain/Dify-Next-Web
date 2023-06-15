@@ -393,7 +393,7 @@ export const useChatStore = create<ChatStore>()(
             user: session.difyUserId,
             difyKey: session.difyKey,
             onUpdate(message, newConversationId) {
-              console.log("[Conversation Id]", newConversationId);
+              // console.log("[Conversation Id]", newConversationId);
               botMessage.streaming = true;
               if (message) {
                 botMessage.content = message;

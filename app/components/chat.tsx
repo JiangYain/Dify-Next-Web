@@ -658,9 +658,7 @@ export function Chat() {
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
-    if (!accessStore.isDifyAuthorized() && session.isDifySession) {
-      copiedHello.content = Locale.Error.DifyUnauthorized;
-    } else if (!accessStore.isAuthorized()) {
+    if (!session.isDifySession && !accessStore.isAuthorized()) {
       copiedHello.content = Locale.Error.Unauthorized;
     }
     context.push(copiedHello);
